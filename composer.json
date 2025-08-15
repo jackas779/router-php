@@ -1,0 +1,17 @@
+{
+    "name": "router/router",
+    "description": "my router",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nicolas Ardila"
+        }
+    ],
+    "require": {}
+}

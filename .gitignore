@@ -1,0 +1,14 @@
+# Directorio de dependencias de Composer
+/vendor/
+
+# Archivo de configuración de entorno
+.env
+.env.local
+.env.backup
+.env.*.php
+
+# IDE y archivos del sistema
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

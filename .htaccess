@@ -1,0 +1,23 @@
+# Activar el motor de reescritura de URLs
+RewriteEngine On
+
+# ====================================
+# 1. Página personalizada para Not Found
+# ====================================
+ErrorDocument 404 /error-404.html
+
+# ====================================
+# 2. Redirección automática a index.php o app.php
+# ====================================
+# Si NO existe el archivo o carpeta solicitada
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Cambia 'index.php' por 'app.php' si lo prefieres
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# ====================================
+# 3. (Opcional) Forzar HTTPS
+# ====================================
+#RewriteCond %{HTTPS} off
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]

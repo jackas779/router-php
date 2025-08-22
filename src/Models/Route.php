@@ -5,6 +5,7 @@ namespace App\Models;
 class Route
 {
   private static array $routes = [];
+  private static Router $router;
 
   public static function run(string $method, array|object $param){
 
@@ -12,8 +13,7 @@ class Route
 
     foreach (self::$routes as $route) {
       if($route['method'] === $method && $route['url'] === URL){
-
-        $router = new Router($param);
+        self::$router = new Router($param);
       }
     }
     
@@ -54,4 +54,7 @@ class Route
     return self::$routes;
   }
   
+  public static function init():void{
+    self::$router->init();
+  }
 }

@@ -9,17 +9,28 @@ function View(string $parametros){
   echo $parametros;
 }
 
+class AlumnoCon {
+  public function clase():void{
+    echo "<br>aqui iniciamos una instancia re guasa dinamicamente<br>";
+  }
+
+  public function clase2():void{
+    echo "<br>se inicia otro metodo dinamico bien chido<br>";
+  }
+}
+
 var_dump(URL);
 echo "<br>";
 
 Route::get('/' ,function () {
-  echo "jasdasdas<br>";
   return View("desde la vista<br>");
 });
 
-Route::get('/alumno', [Router::class, 'clase']);
-Route::get('/alumno', [Router::class, 'clase']);
+Route::get('/alumno', [AlumnoCon::class, 'clase']);
+Route::get('/alumno', [AlumnoCon::class, 'clase2']);
+// Route::get('/alumno', [Router::class, 'clase']);
 Route::post('/alumno', [Router::class, 'clase']);
 
+Route::init();
 
 var_dump(Route::getRoutes());

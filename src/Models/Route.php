@@ -12,6 +12,12 @@ class Route
     // $methods = array_column(self::$routes, $method);
 
     foreach (self::$routes as $route) {
+      $uri  = trim($route['url'] , '/');
+      var_dump($route['url']);
+      if(strpos($uri, '{') !== false){
+        $uri  = preg_replace('#{[a-zA-Z0-9]+}#','({[a-zA-Z0-9]+})',$uri);
+        echo "<br>" . $uri;
+      }
       if($route['method'] === $method && $route['url'] === URL){
         self::$router = new Router($param);
       }

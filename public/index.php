@@ -17,6 +17,9 @@ class AlumnoCon {
   public function clase2():void{
     echo "<br>se inicia otro metodo dinamico bien chido<br>";
   }
+  public function clase3() :void{
+    echo "<br>se inicia una instacia con una ruta dinamica<br>";
+  }
 }
 
 var_dump(URL);
@@ -28,14 +31,16 @@ Route::get('/' ,function () {
 
 Route::get('/alumno', [AlumnoCon::class, 'clase']);
 Route::get('/alumno', [AlumnoCon::class, 'clase2']);
+Route::get('/alumno/{id}/alianza/{codigo}', [AlumnoCon::class, 'clase3']);
 // Route::get('/alumno', [Router::class, 'clase']);
 Route::post('/alumno', [Router::class, 'clase']);
-Route::post('/alumno/{id}/alianza/{codigo}/', [Router::class, 'clase']);
 
 Route::init();
 
+// echo '<pre>';
 var_dump(Route::getRoutes());
 
+// echo '</pre>';
 
 // $pos = preg_split("/({[a-zA-Z0-9]+})/", '/alumno/{id}/alianza/{codigo}/', -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 

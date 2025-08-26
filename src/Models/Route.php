@@ -9,16 +9,24 @@ class Route
 
   public static function run(string $method, array|object $param){
 
-    // $methods = array_column(self::$routes, $method);
-
     foreach (self::$routes as $route) {
-      $uri  = trim($route['url'] , '/');
-      var_dump($route['url']);
+
+      $uri  = trim($route['url'] , '/z');
+      
       if(strpos($uri, '{') !== false){
-        $uri  = preg_replace('#{[a-zA-Z0-9]+}#','({[a-zA-Z0-9]+})',$uri);
-        echo "<br>" . $uri;
+        $uri  = preg_replace('#{[a-zA-Z0-9]+}#','([a-zA-Z0-9]+)',$uri);
+
+        
+        if(preg_match( '#^'.$uri.'$#', trim(URL, '/') , $matches) && $route['method'] === $method){          
+
+          self::$router = new Router($param);
+        }
       }
-      if($route['method'] === $method && $route['url'] === URL){
+
+      // var_dump(preg_match( '#^'.$uri.'$#', trim(URL, '/') ), '#^'.$uri.'$#', trim(URL, '/'), $method);
+      // echo "----------------------------------------------";
+
+      if( $route['method'] === $method && $route['url'] === URL){
         self::$router = new Router($param);
       }
     }
@@ -61,6 +69,10 @@ class Route
   }
   
   public static function init():void{
-    self::$router->init();
+    if(!isset(self::$router)){
+      echo "404 not found";
+    }else{
+      self::$router->init();
+    }
   }
 }

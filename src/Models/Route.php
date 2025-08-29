@@ -7,19 +7,18 @@ class Route
   private static array $routes = [];
   private static Router $router;
 
-  public static function run(string $method, array|callable $param){
+  public static function run(string $method, $url){
 
     foreach (self::$routes as $route) {
 
-      $uri  = trim($route['url'] , '/z');
+      $uri  = trim($route['url'] , '/');
       
       if(strpos($uri, '{') !== false){
         $uri  = preg_replace('#{[a-zA-Z0-9]+}#','([a-zA-Z0-9]+)',$uri);
-
         
         if(preg_match( '#^'.$uri.'$#', trim(URL, '/') , $matches) && $route['method'] === $method){          
 
-          self::$router = new Router($param);
+          self::$router = new Router($route['action']);
         }
       }
 
@@ -27,7 +26,7 @@ class Route
       // echo "----------------------------------------------";
 
       if( $route['method'] === $method && $route['url'] === URL){
-        self::$router = new Router($param);
+        self::$router = new Router($route['action']);
       }
     }
     
@@ -40,7 +39,7 @@ class Route
 
     if($_SERVER['REQUEST_METHOD'] !== $method) return;
 
-    self::run($method,$param);
+    self::run($method,$url);
   }
 
   public static function post(string $url,array|callable  $param) {
@@ -50,7 +49,7 @@ class Route
 
     if($_SERVER['REQUEST_METHOD'] !== $method) return; 
 
-    self::run($method,$param);
+    self::run($method,$url);
   }
   private static function addRoute(string $url){
     if(!in_array($url, self::$routes)){
@@ -60,7 +59,7 @@ class Route
 
   private static function setRoutes(string $url, string $method, array|callable $param ) :void {
 
-    $action = null;
+    $action = $param;
 
     if(is_array($param)){
       $action = join('@', $param);
@@ -88,6 +87,7 @@ class Route
       echo "404 not found";
     }else{
       self::$router->init();
+      // echo "digamos que se inicio un metodo";
     }
   }
 }

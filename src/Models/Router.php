@@ -5,8 +5,12 @@ namespace App\Models;
 class Router {
 
   public array|object $param;
-  public function __construct(array|object $param) {
-    $this->param = $param;
+  public function __construct(string|object $param) {
+    if(is_string($param)){
+      $this->param = explode('@', $param);
+    }else{
+      $this->param = $param;
+    }
   }
 
   public function init(){

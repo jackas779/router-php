@@ -70,15 +70,12 @@ class Route
       return $route['url'] === $url && $route['method'] === $method;
     });
 
-    // if(!in_array(['url' => $url, 'method'=> $method],self::$routes)){
-    // }
-
     if(empty($result)){
       self::$routes[] = ['url' => $url, 'method'=> $method, 'action' => $action];
     }else{
       $url_columns = array_column(self::$routes, 'url');
       $key = array_search($url, $url_columns);
-      self::$routes[$key]['action'] = $param; 
+      self::$routes[$key]['action'] = $action; 
     }
   }
 

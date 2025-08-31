@@ -4,28 +4,33 @@ namespace App\Models;
 
 class Router {
 
-  public array|object $param;
-  public function __construct(string|object $param) {
-    if(is_string($param)){
-      $this->param = explode('@', $param);
+  private array|object $callback;
+  private ?array $arguments;
+
+  public function __construct(string|object $callback, array $propertys = null) {
+    if(is_string($callback)){
+      $this->callback = explode('@', $callback);
     }else{
-      $this->param = $param;
+      $this->callback = $callback;
     }
+
+    $this->arguments = $propertys;
   }
 
   public function init(){
 
-    if (is_callable($this->param)) {
-      return call_user_func($this->param);
+    if (is_callable($this->callback)) {
+      return call_user_func($this->callback);
     }
 
-    if (is_array($this->param)) {
-      $class = $this->param[0];
-      $method = $this->param[1];
+    if (is_array($this->callback)) {
+      $class = $this->callback[0];
+      $method = $this->callback[1];
       if(is_string($class) && class_exists($class)){
         if(is_string($method) && method_exists($class,$method)){
           $object = new $class();
-          return call_user_func([$object, $method]);
+
+          return call_user_func([$object, $method], $this->arguments);
         }
         else{
           echo "metodo no existe";

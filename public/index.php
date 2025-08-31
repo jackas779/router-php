@@ -11,14 +11,15 @@ function View(string $parametros){
 
 class AlumnoCon {
   public function clase():void{
-    echo "<br>aqui iniciamos una instancia re guasa dinamicamente<br>";
+    echo "<br>aqui iniciamos una instancia re guasa dinamicamente clase 1<br>";
   }
 
   public function clase2():void{
-    echo "<br>se inicia otro metodo dinamico bien chido<br>";
+    echo "<br>se inicia otro metodo dinamico bien chido clase 2<br>";
   }
   public function clase3() :void{
-    echo "<br>se inicia una instacia con una ruta dinamica<br>";
+    echo "vamos a usar uso del id ";
+    echo "<br>se inicia una instacia con una ruta dinamica clase 3<br>";
   }
 }
 
@@ -37,14 +38,4 @@ Route::post('/alumno', [Router::class, 'clase']);
 
 Route::init();
 
-// echo '<pre>';
 var_dump(Route::getRoutes());
-
-// echo '</pre>';
-
-// $pos = preg_split("/({[a-zA-Z0-9]+})/", '/alumno/{id}/alianza/{codigo}/', -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
-
-// preg_match_all("/\{[a-zA-Z0-9]+\}/", '/alumno/{id}/alianza/{codigo}/', $matches);
-
-// echo "<br>";
-// var_dump($matches[1]);

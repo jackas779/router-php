@@ -5,56 +5,71 @@ namespace App\Models;
 class Route
 {
   private static array $routes = [];
-  private static Router $router;
+  private static ?Router $router;
 
-  public static function run(string $method, $url){
+  public static function run(string $method, $url) :?Router {
 
     foreach (self::$routes as $route) {
 
       $uri  = trim($route['url'] , '/');
       
       if(strpos($uri, '{') !== false){
-        $uri  = preg_replace('#{[a-zA-Z0-9]+}#','([a-zA-Z0-9]+)',$uri);
-        
-        if(preg_match( '#^'.$uri.'$#', trim(URL, '/') , $matches) && $route['method'] === $method){          
+        $array_url = explode('/', $uri);
 
-          self::$router = new Router($route['action']);
+        $newUrl = preg_replace_callback('/\{([a-zA-Z0-9]+)\}/', function($matches) {
+          $paramName = $matches[1];
+          return "(?<{$paramName}>[a-zA-Z0-9]+)";
+        }, $uri);
+
+
+        if(preg_match( '#^'.$newUrl.'$#', trim(URL, '/') , $matches) && $route['method'] === $method){
+
+          $propertys = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+
+          return new Router($route['action'], $propertys);
         }
       }
 
-      // var_dump(preg_match( '#^'.$uri.'$#', trim(URL, '/') ), '#^'.$uri.'$#', trim(URL, '/'), $method);
-      // echo "----------------------------------------------";
-
       if( $route['method'] === $method && $route['url'] === URL){
-        self::$router = new Router($route['action']);
+        return new Router($route['action']);
       }
     }
+
+    return null;
     
   }
+  
+  public static function handlerRoute(string $url, string $method, array|callable $param) :void {
 
-  public static function get(string $url,array|callable  $param) {
-
-    $method = 'GET';
     self::setRoutes($url, $method, $param);
 
     if($_SERVER['REQUEST_METHOD'] !== $method) return;
 
-    self::run($method,$url);
+    self::$router = self::run($method,$url);
+  }
+
+  public static function get(string $url,array|callable  $param) {
+
+    self::handlerRoute($url,'GET',$param);
+
   }
 
   public static function post(string $url,array|callable  $param) {
 
-    $method = 'POST';
-    self::setRoutes($url, $method, $param);
+    self::handlerRoute($url,'POST',$param);
 
-    if($_SERVER['REQUEST_METHOD'] !== $method) return; 
-
-    self::run($method,$url);
   }
-  private static function addRoute(string $url){
-    if(!in_array($url, self::$routes)){
-      self::$routes[] = $url;
-    }
+
+   public static function put(string $url,array|callable  $param) {
+
+    self::handlerRoute($url,'PUT',$param);
+
+  }
+
+   public static function delete(string $url,array|callable  $param) {
+
+    self::handlerRoute($url,'DELETE',$param);
+
   }
 
   private static function setRoutes(string $url, string $method, array|callable $param ) :void {
@@ -87,7 +102,6 @@ class Route
       echo "404 not found";
     }else{
       self::$router->init();
-      // echo "digamos que se inicio un metodo";
     }
   }
 }

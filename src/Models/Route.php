@@ -6,30 +6,31 @@ class Route
 {
   private static array $routes = [];
   private static ?Router $router;
+  private static ?Route $instance = null;
 
 
   public static function get(string $url,array|callable  $param) {
 
     self::handlerRoute($url,'GET',$param);
-    return new self;
+    return self::$instance;
   }
 
   public static function post(string $url,array|callable  $param) {
 
     self::handlerRoute($url,'POST',$param);
-    return new self();
+    return self::$instance;
   }
 
   public static function put(string $url,array|callable  $param) {
 
     self::handlerRoute($url,'PUT',$param);
-    return new self();
+    return self::$instance;
   }
 
   public static function delete(string $url,array|callable  $param) {
 
     self::handlerRoute($url,'DELETE',$param);
-    return new self();
+    return self::$instance;
   }
 
   public static function getRoutes(): array{
@@ -38,22 +39,32 @@ class Route
 
   public static function middleware (){
     echo "Me ejecuto primero que la vista intereanste logica <br>";
-    // self::$router = null;
+    self::$router = null;
 
     var_dump(self::$router);  
     
   }
   
   public static function init():void{
-    var_dump(self::$router);
     if(!isset(self::$router)){
       echo "404 not found";
     }else{
       self::$router->init();
     }
   }
+  
+  private static function getIntance (){
+
+    if(self::$instance == null){
+      self::$instance = new self();
+    }
+
+    return self::$instance;
+  }
 
   private static function handlerRoute(string $url, string $method, array|callable $param) :void {
+
+    self::getIntance();
 
     self::setRoutes($url, $method, $param);
 
@@ -114,4 +125,6 @@ class Route
     return null;
     
   }
+
+  private function __construct(){}
 }

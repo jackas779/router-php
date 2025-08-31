@@ -17,18 +17,19 @@ class AlumnoCon {
   public function clase2():void{
     echo "<br>se inicia otro metodo dinamico bien chido clase 2<br>";
   }
-  public function clase3() :void{
-    echo "vamos a usar uso del id ";
+  public function clase3(?array $request) :void{
+    echo "vamos a usar uso del id $request[id]";
     echo "<br>se inicia una instacia con una ruta dinamica clase 3<br>";
   }
 }
 
 var_dump(URL);
-echo "<br>";
+  $user = "jackas";
 
-Route::get('/' ,function () {
-  return View("desde la vista<br>");
-});
+
+  Route::get('/' ,function () {
+    return View("desde la vista<br>");
+  })->middleware();
 
 Route::get('/alumno', [AlumnoCon::class, 'clase']);
 Route::get('/alumno', [AlumnoCon::class, 'clase2']);

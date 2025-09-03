@@ -5,8 +5,9 @@ namespace App\Models;
 class Route
 {
   private static array $routes = [];
-  private static ?Router $router;
+  private static ?Router $router = null;
   private static ?Route $instance = null;
+  private string $method;  
 
 
   public static function get(string $url,array|callable  $param) {
@@ -37,16 +38,17 @@ class Route
     return self::$routes;
   }
 
-  public static function middleware (){
-    echo "Me ejecuto primero que la vista intereanste logica <br>";
+  public function middleware (){
+    // var_dump(self::$router);
     self::$router = null;
-
-    var_dump(self::$router);  
     
   }
   
   public static function init():void{
-    if(!isset(self::$router)){
+
+    self::$router = self::$instance->run();
+    
+    if(self::$router === null){
       echo "404 not found";
     }else{
       self::$router->init();
@@ -63,17 +65,17 @@ class Route
   }
 
   private static function handlerRoute(string $url, string $method, array|callable $param) :void {
+    
+    $intance = self::getIntance();
 
-    self::getIntance();
-
-    self::setRoutes($url, $method, $param);
+    $intance->setRoutes($url, $method, $param);
 
     if($_SERVER['REQUEST_METHOD'] !== $method) return;
 
-    self::$router = self::run($method,$url);
+    $intance->method = $method;
   }
 
-  private static function setRoutes(string $url, string $method, array|callable $param ) :void {
+  private function setRoutes(string $url, string $method, array|callable $param ) :void {
 
     $action = $param;
 
@@ -94,14 +96,13 @@ class Route
     }
   }
 
-  private static function run(string $method, $url) :?Router {
+  private function run() :?Router {
 
     foreach (self::$routes as $route) {
 
       $uri  = trim($route['url'] , '/');
       
       if(strpos($uri, '{') !== false){
-        $array_url = explode('/', $uri);
 
         $newUrl = preg_replace_callback('/\{([a-zA-Z0-9]+)\}/', function($matches) {
           $paramName = $matches[1];
@@ -109,7 +110,7 @@ class Route
         }, $uri);
 
 
-        if(preg_match( '#^'.$newUrl.'$#', trim(URL, '/') , $matches) && $route['method'] === $method){
+        if(preg_match( '#^'.$newUrl.'$#', trim(URL, '/') , $matches) && $route['method'] === $this->method){
 
           $propertys = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
@@ -117,7 +118,7 @@ class Route
         }
       }
 
-      if( $route['method'] === $method && $route['url'] === URL){
+      if( $route['method'] === $this->method && $route['url'] === URL){
         return new Router($route['action']);
       }
     }

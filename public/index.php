@@ -27,9 +27,9 @@ var_dump(URL);
   $user = "jackas";
 
 
-  Route::get('/' ,function () {
-    return View("desde la vista<br>");
-  })->middleware();
+Route::get('/' ,function () {
+  return View("<br> desde la vista xd <br>");
+})->middleware();
 
 Route::get('/alumno', [AlumnoCon::class, 'clase']);
 Route::get('/alumno', [AlumnoCon::class, 'clase2']);

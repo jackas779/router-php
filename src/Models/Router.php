@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Interfaces\IMiddleware;
+
 class Router {
 
   private array|object $callback;
   private ?array $arguments;
+  private IMiddleware $middleware;
 
   public function __construct(string|object $callback, array $propertys = null) {
     if(is_string($callback)){
@@ -42,5 +45,10 @@ class Router {
     }
     
 
+  }
+
+  public function middleware($middleware){
+    $this->middleware = new $middleware();
+    $this->middleware->handle("espera algo");
   }
 }

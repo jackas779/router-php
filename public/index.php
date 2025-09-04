@@ -4,6 +4,7 @@
 
 use App\Models\Route;
 use App\Models\Router;
+use App\Interfaces\IMiddleware;
 
 function View(string $parametros){
   echo $parametros;
@@ -23,13 +24,21 @@ class AlumnoCon {
   }
 }
 
+class Middle implements IMiddleware{
+
+  public function handle($request){
+    echo "Hola mundo desde el middleware se ejecuto primero el middleware<br>";
+  }
+
+}
+
 var_dump(URL);
   $user = "jackas";
 
 
 Route::get('/' ,function () {
   return View("<br> desde la vista xd <br>");
-})->middleware();
+})->middleware(Middle::class);
 
 Route::get('/alumno', [AlumnoCon::class, 'clase']);
 Route::get('/alumno', [AlumnoCon::class, 'clase2']);

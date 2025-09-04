@@ -12,26 +12,23 @@ class Route
 
   public static function get(string $url,array|callable  $param) {
 
-    self::handlerRoute($url,'GET',$param);
-    return self::$instance;
+    return self::handlerRoute($url,'GET',$param);
   }
 
   public static function post(string $url,array|callable  $param) {
 
-    self::handlerRoute($url,'POST',$param);
-    return self::$instance;
+    return self::handlerRoute($url,'POST',$param);
+    
   }
 
   public static function put(string $url,array|callable  $param) {
 
-    self::handlerRoute($url,'PUT',$param);
-    return self::$instance;
+    return self::handlerRoute($url,'PUT',$param);
   }
 
   public static function delete(string $url,array|callable  $param) {
 
-    self::handlerRoute($url,'DELETE',$param);
-    return self::$instance;
+    return self::handlerRoute($url,'DELETE',$param);
   }
 
   public static function getRoutes(): array{
@@ -45,8 +42,6 @@ class Route
   }
   
   public static function init():void{
-
-    self::$router = self::$instance->run();
     
     if(self::$router === null){
       echo "404 not found";
@@ -64,15 +59,18 @@ class Route
     return self::$instance;
   }
 
-  private static function handlerRoute(string $url, string $method, array|callable $param) :void {
+  private static function handlerRoute(string $url, string $method, array|callable $param) :?Router  {
     
     $intance = self::getIntance();
 
     $intance->setRoutes($url, $method, $param);
 
-    if($_SERVER['REQUEST_METHOD'] !== $method) return;
+    if($_SERVER['REQUEST_METHOD'] !== $method) return null;
 
+    
     $intance->method = $method;
+
+    return $intance->run();
   }
 
   private function setRoutes(string $url, string $method, array|callable $param ) :void {
